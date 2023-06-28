@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js">
+        AFRAME.registerComponent("terrain-rotation-reader", {
+        schema: {
+            speedOfRotation: { type: "number", default: 0 }    
+        },
+        init: function () {
+            window.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowRight") {
+                if (this.data.speedOfRotation < 0.1) {
+                this.data.speedOfRotation += 0.01;
+                }
+            }
+            if (e.key === "ArrowLeft") {
+                if (this.data.speedOfRotation > -0.1) {
+                this.data.speedOfRotation -= 0.01;
+                }
+            }
+            });
+        },
+        tick: function () {
+            var mapRotation = this.el.getAttribute("rotation");
+
+            mapRotation.y += this.data.speedOfRotation;
+
+            this.el.setAttribute("rotation", {
+            x: mapRotation.x,
+            y: mapRotation.y,
+            z: mapRotation.z
+            });
+        }
+        });
+
+        AFRAME.registerComponent("diverSpin",{
+        schema:{
+            speedOfRotation:{type:"number",default:0},
+            speedOfAscent:{type:"number",default:0}
+        },
+        init:function(){
+            window.addEventListener("keydown",(g)=>{
+            this.data.speedOfRotation=this.el.getAttribute("rotation")
+            this.data.speedOfAscent=this.el.getAttribute("position")
+            let diverRotation=this.data.speedOfRotation
+            let diverAscent=this.data.speedOfAscent
+            if(f.key=="ArrowRight"){
+                if(diverRotation.x<10){
+                diverRotation.x+=0.5
+                this.el.setAttribute("rotation",diverRotation)
+                }
+            }
+            if(f.key=="ArrowLeft"){
+                if(diverRotation.x>-10){
+                diverRotation.x-=0.5
+                this.el.setAttribute("rotation",diverRotation)
+                }
+            }
+            if(f.key=="ArrowUp"){
+                if(diverRotation.z<20){
+                diverRotation.z+=0.5
+                this.el.setAttribute("rotation",diverRotation)
+                }
+                if(diverRotation.y<2){
+                diverRotation.y+=0.01
+                this.el.setAttribute("position",diverPostion)
+                }
+            }
+            if(f.key=="ArrowDown"){
+                if(diverRotation.z>-20){
+                diverRotation.z-=0.5
+                this.el.setAttribute("rotation",diverRotation)
+                }
+                if(diverRotation.y>-2){
+                diverRotation.y-=0.01
+                this.el.setAttribute("position",diverPostion)
+                }
+            }
+            })
+        }
+        })
+    </script>
+  </head>
+  <body>
+    <a-scene background="color:#05f">
+      <a-entity id="look" look-controls camera position="0 2 20"></a-entity>
+      <a-assets timeout="10000">        
+        <a-asset-item id="terrainMap" src="./Island.glb"></a-asset-item>
+        <a-asset-item id="diver" src="./Scuba Diver.glb"></a-asset-item>     
+      </a-assets>
+      <a-entity id="terrain" gltf-model="#terrainMap" position="0 -10 0" scale="0.3 0.3 0.3" animation="property: rotation; to: 0 1000 0;easing:linear; loop: true; dur: 150000" terrain-rotation-reader></a-entity>
+      <a-entity id="diverModel" gltf-model="#diver" position="0 0 15" rotation="0 90 0" scale="0.02 0.02 0.02" diverSpin></a-entity>
+    </a-scene>
+  </body>
+</html>
